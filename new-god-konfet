@@ -1,0 +1,82 @@
+// Настройка ниже, чтобы изменить URL-путь к изображению снега
+  var snowsrc = "https://cdn2.scratch.mit.edu/get_image/gallery/1764051_200x130.png"
+  // Настройка ниже, чтобы изменить количество снега для рендеринга
+  var no = 10;
+  // Настраиваем, должен ли снег исчезать через x секунд (0 = никогда):
+  var hidesnowtime = 0;
+  // Настройка количества выпадающего снега перед исчезновением ("высота окна" или "высота страницы")
+  var snowdistance = "pageheight";
+
+/////////// Stop Config //////////////////////////////////////
+
+  var ie4up = (document.all)? 1: 0;
+  var ns6up = (document.getElementById &&! document.all)? 1: 0;
+
+	function iecompattest () {
+	return (document.compatMode && document.compatMode! = "BackCompat")? document.documentElement: document.body
+	}
+
+  var dx, xp, yp; // координаты и переменные положения
+  var am, stx, sty; // амплитуда и ступенчатые переменные
+  var i, doc_width = 800, doc_height = 600; 
+  
+  if (ns6up) {
+    doc_width = self.innerWidth;
+    doc_height = self.innerHeight;
+  } else if (ie4up) {
+    doc_width = iecompattest (). clientWidth;
+    doc_height = iecompattest (). clientHeight;
+  }
+
+  dx = new Array ();
+  xp = new Array ();
+  yp = новый массив ();
+  am = new Array ();
+  stx = новый массив ();
+  sty = new Array ();
+  snowsrc = (snowsrc.indexOf ( "dynamicdrive.com") = - 1)? "snow.gif": snowsrc
+  для (i = 0; i <нет; ++ i) {  
+    dx [i] = 0; // устанавливаем переменные координат
+    xp [i] = Math.random () * (doc_width-50); // устанавливаем переменные положения
+    yp [i] = Math.random () * doc_height;
+    am [i] = Math.random () * 20; // устанавливаем переменные амплитуды
+    stx [i] = 0,02 + Math.random () / 10; // устанавливаем переменные шага
+    sty [i] = 0.7 + Math.random (); // устанавливаем переменные шага
+		if (ie4up || ns6up) {
+      if (i == 0) {
+        document.write ("<div id = \" dot "+ i +" \ "style = \" POSITION: absolute; Z-INDEX: "+ i +"; VISIBILITY: видимый; TOP: 15px; LEFT: 15px; \ "> <img src = '" + snowsrc + "' border = \" 0 \ "> <\ / div>");
+      } еще {
+        document.write ("<div id = \" dot "+ i +" \ "style = \" POSITION: absolute; Z-INDEX: "+ i +"; VISIBILITY: видимый; TOP: 15px; LEFT: 15px; \ "> <img src = '" + snowsrc + "' border = \" 0 \ "> <\ / div>");
+      }
+    }
+  }
+
+  function snowIE_NS6 () {// IE и NS6 основная функция анимации
+    doc_width = ns6up? window.innerWidth-10: iecompattest (). clientWidth-10;
+		doc_height = (window.innerHeight && snowdistance == "windowheight")? window.innerHeight: (ie4up && snowdistance == "windowheight")? iecompattest (). clientHeight: (ie4up &&! window.opera && snowdistance == "pageheight")? iecompattest (). scrollHeight: iecompattest (). offsetHeight;
+    for (i = 0; i <no; ++ i) {// итерация для каждой точки
+      yp [i] + = sty [i];
+      if (yp [i]> doc_height-50) {
+        xp [i] = Math.random () * (doc_width-am [i] -30);
+        yp [i] = 0;
+        stx [i] = 0,02 + Math.random () / 10;
+        sty [i] = 0.7 + Math.random ();
+      }
+      dx [i] + = stx [i];
+      document.getElementById ( "точка" + I) .style.top = YP [I] + "ПВ";
+      document.getElementById ("точка" + i) .style.left = xp [i] + am [i] * Math.sin (dx [i]) + "px";  
+    }
+    snowtimer = setTimeout ("snowIE_NS6 ()", 10);
+  }
+
+	function hidesnow () {
+		if (window.snowtimer) clearTimeout (snowtimer)
+		for (i = 0; i <no; i ++) document.getElementById ("точка" + i) .style.visibility = "скрытый"
+	}
+		
+
+if (ie4up || ns6up) {
+    snowIE_NS6 ();
+		if (hidesnowtime> 0)
+		setTimeout ("hidesnow ()", hidesnowtime * 1000)
+		}
